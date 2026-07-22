@@ -46,4 +46,22 @@ async def ingest_sensor(data: dict):
         
         supabase.table("sensor_events").insert(event).execute()
         
+        # Send Email Alert
+        if status == "ALERT":
+            resend.emails.send({
+                "from": "Cloud Guardian <alert@resend.dev>",
+                "to": os.getenv("mahlatseruby@gmail.com"),  
+                "subject": f"🚨 Security Alert - {device_id}",
+                "html": f"""
+                    <h2>Security Alert!</h2>
+                    <p><strong>Device:</strong> {device_id}</p>
+                    <p><strong>Temperature:</strong> {temperature}°C</p>
+                    <p><strong>Motion Detected:</strong> {motion}</p>
+                    <p>Time: {datetime.now()}</p>
+                """
+            })
         
+        return {"status": "success", "event": event}
+        
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
