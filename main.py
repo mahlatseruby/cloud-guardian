@@ -65,3 +65,14 @@ async def ingest_sensor(data: dict):
         
     except Exception as e:
         return {"status": "error", "message": str(e)}
+    
+@app.get("/events")
+async def get_events():
+    """Get latest events for dashboard"""
+    response = supabase.table("sensor_events") \
+        .select("*") \
+        .order("created_at", desc=True) \
+        .limit(20) \
+        .execute()
+    return response.data
+    
