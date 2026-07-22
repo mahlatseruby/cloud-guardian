@@ -9,3 +9,12 @@ from datetime import datetime
 load_dotenv()
 
 app = FastAPI(title="Cloud Guardian")
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
