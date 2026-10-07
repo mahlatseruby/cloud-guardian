@@ -10,11 +10,35 @@ Globals:
 
 Resources:
 
+  # DynamoDB Table
+  CloudGuardianEventsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: CloudGuardianEvents
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: deviceId
+          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: S
+      KeySchema:
+        - AttributeName: deviceId
+          KeyType: HASH
+        - AttributeName: timestamp
+          KeyType: RANGE
+
+  # Ingest Sensor Function
   IngestSensorFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: .
       Handler: com.cloudguardian.handler.IngestSensorHandler::handleRequest
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CloudGuardianEventsTable
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CloudGuardianEventsTable
       Events:
         IngestApi:
           Type: Api
@@ -22,11 +46,18 @@ Resources:
             Path: /sensor
             Method: post
 
+  # Get Events Function
   GetEventsFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: .
       Handler: com.cloudguardian.handler.GetEventsHandler::handleRequest
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref CloudGuardianEventsTable
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CloudGuardianEventsTable
       Events:
         GetEventsApi:
           Type: Api
