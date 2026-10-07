@@ -1,0 +1,35 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Cloud Guardian - Serverless IoT Security Monitor (Java)
+
+Globals:
+  Function:
+    Timeout: 20
+    Runtime: java17
+    MemorySize: 512
+
+Resources:
+
+  IngestSensorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: com.cloudguardian.handler.IngestSensorHandler::handleRequest
+      Events:
+        IngestApi:
+          Type: Api
+          Properties:
+            Path: /sensor
+            Method: post
+
+  GetEventsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: com.cloudguardian.handler.GetEventsHandler::handleRequest
+      Events:
+        GetEventsApi:
+          Type: Api
+          Properties:
+            Path: /events
+            Method: get
