@@ -1,2 +1,5 @@
+com\cloudguardian\service\DynamoDbService.class
 com\cloudguardian\handler\IngestSensorHandler.class
+com\cloudguardian\handler\GetEventsHandler.class
 com\cloudguardian\model\SensorEvent.class
+com\cloudguardian\service\EventService.class

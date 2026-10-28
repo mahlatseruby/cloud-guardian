@@ -75,4 +75,4 @@ public class GetEventsHandler implements RequestHandler<APIGatewayProxyRequestEv
 
         return response;
     }
-}
+} 
